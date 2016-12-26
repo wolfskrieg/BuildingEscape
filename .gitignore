@@ -2,5 +2,5 @@ Binaries/
 Content/StarterContent/
 Saved/
 Intermediate/
-*.opendb
-*.db
+*.VC.opendb
+*.VC.db
