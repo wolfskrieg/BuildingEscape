@@ -20,11 +20,15 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+}
+
+void UOpenDoor::OpenDoor() {
+
 	AActor* Door = GetOwner();
 	FRotator OwnRotator(0.0f, 60.0f, 0.0f);
 	Door->SetActorRotation(OwnRotator);
-
-	
 }
 
 
@@ -34,5 +38,7 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
 	// ...
+	if(PressurePlate->IsOverlappingActor(ActorThatOpens)) { OpenDoor(); }
+
 }
 
