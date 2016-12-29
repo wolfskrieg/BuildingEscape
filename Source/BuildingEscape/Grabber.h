@@ -33,6 +33,6 @@ private:
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* InputComponent = nullptr; 
-	FVector HandleLocation();
+	FVector PhysicsHandleLocation(FVector& );
 	
 };
