@@ -15,9 +15,16 @@ public:
 	// Sets default values for this component's properties
 	UGrabber();
 
-	void Grab();
+	
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	void Grab();
+	void Release();
+	void FindPhysicsComponent();
+	void SetupInputComponent();
+	const FHitResult GetFirstPhysicsBodyInReach();
+	
 	
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
@@ -25,6 +32,7 @@ public:
 private:
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
-	UInputComponent* InputComponent = nullptr;
+	UInputComponent* InputComponent = nullptr; 
+	FVector HandleLocation();
 	
 };
