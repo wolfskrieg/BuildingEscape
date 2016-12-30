@@ -21,17 +21,13 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 	Owner = GetOwner();
-	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 
 }
 
-void UOpenDoor::OpenDoor() {
 
-	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
-}
-
-void UOpenDoor::CloseDoor(float Time) {
-
+/* void UOpenDoor::CloseDoor(float Time) {
+	
+	
 	float AngleYaw = OpenAngle - Time / DoorClosedDelayTime * OpenAngle;
 
 	if(Time > 0 && DoorClosedDelayTime != 0) {
@@ -41,7 +37,9 @@ void UOpenDoor::CloseDoor(float Time) {
 	}
 	else Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
 
+
 }
+*/
 
 
 // Called every frame
@@ -50,16 +48,14 @@ void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompo
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
 
-	if(GetTotalMassOnPlate() >= 5.f) { 
+	if(GetTotalMassOnPlate() >= TriggerMass) { 
 		
-		OpenDoor(); 
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+		OnOpen.Broadcast();
 
 	}
-	else if(GetWorld()->GetTimeSeconds() - LastDoorOpenTime < DoorClosedDelayTime) {
+	else {
 	
-		float Time = GetWorld()->GetTimeSeconds() - LastDoorOpenTime;
-		CloseDoor(Time);
+		OnClose.Broadcast();
 	
 	}
 
@@ -70,16 +66,29 @@ float UOpenDoor::GetTotalMassOnPlate() {
 
 	float TotalMass = 0.0f;
 	TArray<AActor*> OverlappingActors;
-	PressurePlate->GetOverlappingActors(OverlappingActors);
 
-	for(const auto& Actor : OverlappingActors) {
-
-		UPrimitiveComponent* Component = Actor->FindComponentByClass<UPrimitiveComponent>();
-		TotalMass += Component->GetMass();
+	if(!PressurePlate) {
+	
+		UE_LOG(LogTemp, Error, TEXT("Trigger Volume not chosen on %s"), *GetOwner()->GetName());
+		return TotalMass;
 	
 	}
 
-	return TotalMass;
+	else {
+	
+		PressurePlate->GetOverlappingActors(OverlappingActors);
 
+		for(const auto& Actor : OverlappingActors) {
+
+			UPrimitiveComponent* Component = Actor->FindComponentByClass<UPrimitiveComponent>();
+			TotalMass += Component->GetMass();
+
+		}
+
+		return TotalMass;
+
+
+	}
+	
 }
 
